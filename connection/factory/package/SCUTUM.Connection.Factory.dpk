@@ -1,0 +1,52 @@
+package SCUTUM.Connection.Factory;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  dbrtl,
+  DbxCommonDriver,
+  dbexpress,
+  dsnap,
+  DBXFirebirdDriver,
+  xmlrtl,
+  AnyDAC_Phys_D18,
+  AnyDAC_ComI_D18,
+  AnyDAC_PhysIB_D18,
+  AnyDAC_Comp_D18,
+  AnyDAC_GUIxForms_D18;
+
+contains
+  SCUTUM.Connection.Abstract in '..\source\SCUTUM.Connection.Abstract.pas',
+  SCUTUM.Connection.Generic.DBX in '..\source\SCUTUM.Connection.Generic.DBX.pas',
+  SCUTUM.Connection.Firebird.DBX in '..\source\SCUTUM.Connection.Firebird.DBX.pas',
+  SCUTUM.Connection.Generic.FireDac in '..\source\SCUTUM.Connection.Generic.FireDac.pas',
+  SCUTUM.Connection.Firebird.FireDac in '..\source\SCUTUM.Connection.Firebird.FireDac.pas';
+
+end.
