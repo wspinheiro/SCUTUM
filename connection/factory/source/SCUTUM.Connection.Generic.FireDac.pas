@@ -9,7 +9,7 @@ uses
   System.Classes;
 
 type
-  TSCUTUMConnectionGenericFireDac = class(TInterfacedObject ,ISCUTUMConnectionAbstract)
+  TSCUTUMConnectionGenericFireDac = class(TInterfacedObject ,ISCUTUMConnection)
   protected
     FConnection : TADConnection;
     FDatabase : String;
@@ -24,39 +24,40 @@ type
     procedure SetPassword(const APassword: string);
     procedure SetUsername(const AUsername: string);
     procedure SetServer(const AServer: string);
+    procedure BeginTrans;
+    procedure Commit;
+    procedure Rollback;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-
   end;
 
-  TSCUTUMQueryGenericFireDac = class(TInterfacedObject,ISCUTUMQueryAbstract)
+  TSCUTUMQueryGenericFireDac = class(TInterfacedObject,ISCUTUMQuery)
   private
     FQuery : TADQuery;
-    FConnection : ISCUTUMConnectionAbstract;
+    FConnection : ISCUTUMConnection;
   public
     procedure BeforeDestruction; override;
     procedure AfterConstruction; override;
     procedure Close;
     procedure ExecSql;
     procedure Open;
-    procedure SetConnection(Value: ISCUTUMConnectionAbstract);
-    function GetConnection: ISCUTUMConnectionAbstract;
+    procedure SetConnection(Value: ISCUTUMConnection);
+    function GetConnection: ISCUTUMConnection;
     function DataSet: TDataSet;
     function SQL: TStrings;
   end;
 
-  TSCUTUMConnectionFactoryGenericFireDac = class(TInterfacedObject, ISCUTUMConnectionFactoryAbstract)
+  TSCUTUMDatabaseFactoryGenericFireDac = class(TInterfacedObject, ISCUTUMDatabaseFactory)
   public
-    function CreateConnection: ISCUTUMConnectionAbstract;virtual;
-    function CreateQuery: ISCUTUMQueryAbstract;
+    function CreateConnection: ISCUTUMConnection;virtual;
+    function CreateQuery: ISCUTUMQuery;
   end;
 
 implementation
 uses
   uADStanDef,
   uADStanAsync,
-  uADDAptManager,
-  uADGUIxFormsWait;
+  uADDAptManager;
 
 { TSCUTUMConnectionFirebirdFD }
 
@@ -72,9 +73,19 @@ begin
   inherited;
 end;
 
+procedure TSCUTUMConnectionGenericFireDac.BeginTrans;
+begin
+  Self.FConnection.StartTransaction();
+end;
+
 procedure TSCUTUMConnectionGenericFireDac.Close;
 begin
   Self.FConnection.Close;
+end;
+
+procedure TSCUTUMConnectionGenericFireDac.Commit;
+begin
+  Self.FConnection.Commit();
 end;
 
 function TSCUTUMConnectionGenericFireDac.ConcreteConnection: TComponent;
@@ -86,6 +97,11 @@ procedure TSCUTUMConnectionGenericFireDac.Open;
 begin
   Self.FConnection.LoginPrompt := false;
   Self.FConnection.Open();
+end;
+
+procedure TSCUTUMConnectionGenericFireDac.Rollback;
+begin
+  Self.FConnection.Rollback();
 end;
 
 procedure TSCUTUMConnectionGenericFireDac.SetDatabase(const ADatabase: string);
@@ -137,7 +153,7 @@ begin
   Self.FQuery.ExecSQL();
 end;
 
-function TSCUTUMQueryGenericFireDac.GetConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMQueryGenericFireDac.GetConnection: ISCUTUMConnection;
 begin
   Result := Self.FConnection;
 end;
@@ -148,7 +164,7 @@ begin
 end;
 
 procedure TSCUTUMQueryGenericFireDac.SetConnection(
-  Value: ISCUTUMConnectionAbstract);
+  Value: ISCUTUMConnection);
 begin
   Self.FConnection := Value;
   Self.FQuery.Connection := TADCustomConnection(Self.FConnection.ConcreteConnection);
@@ -161,12 +177,12 @@ end;
 
 { TSCUTUMConnectionFactoryFirebirdFD }
 
-function TSCUTUMConnectionFactoryGenericFireDac.CreateConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMDatabaseFactoryGenericFireDac.CreateConnection: ISCUTUMConnection;
 begin
   Result := TSCUTUMConnectionGenericFireDac.Create;
 end;
 
-function TSCUTUMConnectionFactoryGenericFireDac.CreateQuery: ISCUTUMQueryAbstract;
+function TSCUTUMDatabaseFactoryGenericFireDac.CreateQuery: ISCUTUMQuery;
 begin
   Result := TSCUTUMQueryGenericFireDac.Create;
 end;

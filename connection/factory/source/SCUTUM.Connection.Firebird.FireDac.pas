@@ -6,14 +6,14 @@ uses
   SCUTUM.Connection.Abstract;
 
 type
-  TSCUTUMConnectionFirebirdFireDac = class(TSCUTUMConnectionGenericFireDac ,ISCUTUMConnectionAbstract)
+  TSCUTUMConnectionFirebirdFireDac = class(TSCUTUMConnectionGenericFireDac ,ISCUTUMConnection)
   public
     procedure Open;override;
   end;
 
-  TSCUTUMConnectionFactoryFirebirdFireDac = class(TSCUTUMConnectionFactoryGenericFireDac, ISCUTUMConnectionFactoryAbstract)
+  TSCUTUMDatabaseFactoryFirebirdFireDac = class(TSCUTUMDatabaseFactoryGenericFireDac, ISCUTUMDatabaseFactory)
   public
-    function CreateConnection: ISCUTUMConnectionAbstract;override;
+    function CreateConnection: ISCUTUMConnection;override;
   end;
 
 implementation
@@ -42,7 +42,7 @@ end;
 
 { TSCUTUMConnectionFactoryFirebirdFireDac }
 
-function TSCUTUMConnectionFactoryFirebirdFireDac.CreateConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMDatabaseFactoryFirebirdFireDac.CreateConnection: ISCUTUMConnection;
 begin
   Result := TSCUTUMConnectionFirebirdFireDac.Create;
 end;

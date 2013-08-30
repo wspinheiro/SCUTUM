@@ -40,13 +40,16 @@ requires
   AnyDAC_ComI_D18,
   AnyDAC_PhysIB_D18,
   AnyDAC_Comp_D18,
-  AnyDAC_GUIxForms_D18;
+  AnyDAC_GUIxForms_D18,
+  AnyDAC_PhysODBC_D18,
+  AnyDAC_PhysMSSQL_D18;
 
 contains
   SCUTUM.Connection.Abstract in '..\source\SCUTUM.Connection.Abstract.pas',
   SCUTUM.Connection.Generic.DBX in '..\source\SCUTUM.Connection.Generic.DBX.pas',
   SCUTUM.Connection.Firebird.DBX in '..\source\SCUTUM.Connection.Firebird.DBX.pas',
   SCUTUM.Connection.Generic.FireDac in '..\source\SCUTUM.Connection.Generic.FireDac.pas',
-  SCUTUM.Connection.Firebird.FireDac in '..\source\SCUTUM.Connection.Firebird.FireDac.pas';
+  SCUTUM.Connection.Firebird.FireDac in '..\source\SCUTUM.Connection.Firebird.FireDac.pas',
+  SCUTUM.Connection.MSSQL.FireDac in '..\source\SCUTUM.Connection.MSSQL.FireDac.pas';
 
 end.

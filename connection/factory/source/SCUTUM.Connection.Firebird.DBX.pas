@@ -7,14 +7,14 @@ uses
   SCUTUM.Connection.Generic.DBX;
 
 type
-  TSCUTUMConnectionFirebirdDbx = class(TSCUTUMConnectionGenericDbx,ISCUTUMConnectionAbstract)
+  TSCUTUMConnectionFirebirdDbx = class(TSCUTUMConnectionGenericDbx,ISCUTUMConnection)
   public
     procedure Open;override;
   end;
 
-  TSCUTUMConnectionFactoryFirebirdDbx = class(TSCUTUMConnectionFactoryGenericDbx, ISCUTUMConnectionFactoryAbstract)
+  TSCUTUMDatabaseFactoryFirebirdDbx = class(TSCUTUMDatabaseFactoryGenericDbx, ISCUTUMDatabaseFactory)
   public
-    function CreateConnection: ISCUTUMConnectionAbstract;override;
+    function CreateConnection: ISCUTUMConnection;override;
   end;
 
 implementation
@@ -38,7 +38,7 @@ end;
 
 { TSCUTUMConnectionFactoryFirebird }
 
-function TSCUTUMConnectionFactoryFirebirdDbx.CreateConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMDatabaseFactoryFirebirdDbx.CreateConnection: ISCUTUMConnection;
 begin
   Result := TSCUTUMConnectionFirebirdDbx.Create;
 end;

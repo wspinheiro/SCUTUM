@@ -8,12 +8,14 @@ uses
   Datasnap.DBClient,
   Datasnap.Provider,
   Data.DB,
-  System.Classes;
+  System.Classes,
+  Data.DBXCommon;
 
 type
-  TSCUTUMConnectionGenericDbx = class(TInterfacedObject ,ISCUTUMConnectionAbstract)
+  TSCUTUMConnectionGenericDbx = class(TInterfacedObject ,ISCUTUMConnection)
   protected
     FConnection : TSQLConnection;
+    FTransaction: TDBXTransaction;
     FDatabase : String;
     FUsername : String;
     FPassword : String;
@@ -26,32 +28,35 @@ type
     procedure SetPassword(const APassword: string);
     procedure SetUsername(const AUsername: string);
     procedure SetServer(const AServer: string);
+    procedure BeginTrans;
+    procedure Commit;
+    procedure Rollback;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
   end;
 
-  TSCUTUMQueryGenericDbx = class(TInterfacedObject,ISCUTUMQueryAbstract)
+  TSCUTUMQueryGenericDbx = class(TInterfacedObject,ISCUTUMQuery)
   private
     FQuery : TSQLQuery;
     FCds   : TClientDataSet;
     FProvider : TDataSetProvider;
-    FConnection : ISCUTUMConnectionAbstract;
+    FConnection : ISCUTUMConnection;
   public
     procedure BeforeDestruction; override;
     procedure AfterConstruction; override;
     procedure Close;
     procedure ExecSql;
     procedure Open;
-    procedure SetConnection(Value: ISCUTUMConnectionAbstract);
-    function GetConnection: ISCUTUMConnectionAbstract;
+    procedure SetConnection(Value: ISCUTUMConnection);
+    function GetConnection: ISCUTUMConnection;
     function DataSet: TDataSet;
     function SQL: TStrings;
   end;
 
-  TSCUTUMConnectionFactoryGenericDbx = class(TInterfacedObject, ISCUTUMConnectionFactoryAbstract)
+  TSCUTUMDatabaseFactoryGenericDbx = class(TInterfacedObject, ISCUTUMDatabaseFactory)
   public
-    function CreateConnection: ISCUTUMConnectionAbstract;virtual;
-    function CreateQuery: ISCUTUMQueryAbstract;
+    function CreateConnection: ISCUTUMConnection;virtual;
+    function CreateQuery: ISCUTUMQuery;
   end;
 
 implementation
@@ -73,9 +78,19 @@ begin
   inherited;
 end;
 
+procedure TSCUTUMConnectionGenericDbx.BeginTrans;
+begin
+  Self.FTransaction := Self.FConnection.BeginTransaction();
+end;
+
 procedure TSCUTUMConnectionGenericDbx.Close;
 begin
   Self.FConnection.Close;
+end;
+
+procedure TSCUTUMConnectionGenericDbx.Commit;
+begin
+  Self.FConnection.CommitFreeAndNil(self.FTransaction);
 end;
 
 function TSCUTUMConnectionGenericDbx.ConcreteConnection: TComponent;
@@ -96,6 +111,11 @@ begin
     LoginPrompt := false;
   end;
   Self.FConnection.Open;
+end;
+
+procedure TSCUTUMConnectionGenericDbx.Rollback;
+begin
+  Self.FConnection.RollbackFreeAndNil(Self.FTransaction);
 end;
 
 procedure TSCUTUMConnectionGenericDbx.SetDatabase(const ADatabase: string);
@@ -154,7 +174,7 @@ begin
   Self.FQuery.ExecSQL();
 end;
 
-function TSCUTUMQueryGenericDbx.GetConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMQueryGenericDbx.GetConnection: ISCUTUMConnection;
 begin
   Result := Self.FConnection;
 end;
@@ -164,7 +184,7 @@ begin
   Self.FCds.Open;
 end;
 
-procedure TSCUTUMQueryGenericDbx.SetConnection(Value: ISCUTUMConnectionAbstract);
+procedure TSCUTUMQueryGenericDbx.SetConnection(Value: ISCUTUMConnection);
 begin
   Self.FConnection := Value;
   Self.FQuery.SQLConnection := TSQLConnection(Self.FConnection.ConcreteConnection());
@@ -177,12 +197,12 @@ end;
 
 { TSCUTUMConnectionFactoryFirebird }
 
-function TSCUTUMConnectionFactoryGenericDbx.CreateConnection: ISCUTUMConnectionAbstract;
+function TSCUTUMDatabaseFactoryGenericDbx.CreateConnection: ISCUTUMConnection;
 begin
   Result := TSCUTUMConnectionGenericDbx.Create;
 end;
 
-function TSCUTUMConnectionFactoryGenericDbx.CreateQuery: ISCUTUMQueryAbstract;
+function TSCUTUMDatabaseFactoryGenericDbx.CreateQuery: ISCUTUMQuery;
 begin
   Result := TSCUTUMQueryGenericDbx.Create;
 end;

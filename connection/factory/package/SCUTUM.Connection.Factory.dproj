@@ -87,11 +87,14 @@
         <DCCReference Include="AnyDAC_PhysIB_D18.dcp"/>
         <DCCReference Include="AnyDAC_Comp_D18.dcp"/>
         <DCCReference Include="AnyDAC_GUIxForms_D18.dcp"/>
+        <DCCReference Include="AnyDAC_PhysODBC_D18.dcp"/>
+        <DCCReference Include="AnyDAC_PhysMSSQL_D18.dcp"/>
         <DCCReference Include="..\source\SCUTUM.Connection.Abstract.pas"/>
         <DCCReference Include="..\source\SCUTUM.Connection.Generic.DBX.pas"/>
         <DCCReference Include="..\source\SCUTUM.Connection.Firebird.DBX.pas"/>
         <DCCReference Include="..\source\SCUTUM.Connection.Generic.FireDac.pas"/>
         <DCCReference Include="..\source\SCUTUM.Connection.Firebird.FireDac.pas"/>
+        <DCCReference Include="..\source\SCUTUM.Connection.MSSQL.FireDac.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
